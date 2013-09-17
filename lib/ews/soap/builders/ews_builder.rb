@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 =begin
   This file is part of Viewpoint; the Ruby library for Microsoft Exchange Web Services.
 
@@ -49,7 +50,7 @@ module Viewpoint::EWS::SOAP
         node.parent.namespace = parent_namespace(node)
         node.Header {
           set_version_header! opts[:server_version]
-		      set_impersonation! opts[:impersonation_type], opts[:impersonation_mail]
+          set_impersonation! opts[:impersonation_type], opts[:impersonation_mail]
           yield(:header, self) if block_given?
         }
         node.Body {
@@ -90,7 +91,7 @@ module Viewpoint::EWS::SOAP
         se = vals.delete(:sub_elements)
         txt = vals.delete(:text)
 
-        @nbuild.send(keys.first.to_s.camel_case, txt, vals) {|x|
+        @nbuild[NS_EWS_TYPES].send(keys.first.to_s.camel_case, txt, vals) {|x|
           build_xml!(se) if se
         }
       when 'Array'
@@ -670,6 +671,11 @@ module Viewpoint::EWS::SOAP
       @nbuild.SubscriptionId(subid)
     end
 
+    # @see http://msdn.microsoft.com/en-us/library/exchange/aa579726(v=exchg.140).aspx
+    def subscription_status!(status)
+      @nbuild.SubscriptionStatus(status)
+    end
+
     # @see http://msdn.microsoft.com/en-us/library/aa563455(v=EXCHG.140).aspx
     def pull_subscription_request(subopts)
       subscribe_all = subopts[:subscribe_to_all_folders] ? 'true' : 'false'
@@ -683,8 +689,8 @@ module Viewpoint::EWS::SOAP
 
     # @see http://msdn.microsoft.com/en-us/library/aa563599(v=EXCHG.140).aspx
     def push_subscription_request(subopts)
-      subscribe_all = subopts[:subscribe_to_all_folders] ? 'true' : 'false'
-      @nbuild.PushSubscriptionRequest('SubscribeToAllFolders' => subscribe_all) {
+      # subscribe_all = subopts[:subscribe_to_all_folders] ? 'true' : 'false'
+      @nbuild.PushSubscriptionRequest() {
         folder_ids!(subopts[:folder_ids]) if subopts[:folder_ids]
         event_types!(subopts[:event_types]) if subopts[:event_types]
         watermark!(subopts[:watermark]) if subopts[:watermark]
@@ -795,7 +801,7 @@ module Viewpoint::EWS::SOAP
     def subject!(sub)
       nbuild[NS_EWS_TYPES].Subject(sub)
     end
-    
+
     def importance!(sub)
       nbuild[NS_EWS_TYPES].Importance(sub)
     end
@@ -865,6 +871,14 @@ module Viewpoint::EWS::SOAP
       nbuild[NS_EWS_TYPES].End(et[:text])
     end
 
+    def categories!(categories)
+      nbuild[NS_EWS_TYPES].Categories {
+        categories.each do |category|
+          nbuild[NS_EWS_TYPES].String(category)
+        end
+      }
+    end
+
     # @see http://msdn.microsoft.com/en-us/library/aa565428(v=exchg.140).aspx
     def item_changes!(changes)
       nbuild.ItemChanges {
@@ -908,7 +922,7 @@ module Viewpoint::EWS::SOAP
       uri = upd.select {|k,v| k =~ /_uri/i}
       raise EwsBadArgumentError, "Bad argument given for SetItemField." if uri.keys.length != 1
       upd.delete(uri.keys.first)
-      @nbuild.SetItemField {
+      @nbuild[NS_EWS_TYPES].SetItemField {
         dispatch_field_uri!(uri)
         dispatch_field_item!(upd)
       }
@@ -1027,7 +1041,7 @@ module Viewpoint::EWS::SOAP
 
     # A helper to dispatch to a FieldURI, IndexedFieldURI, or an ExtendedFieldURI
     # @todo Implement ExtendedFieldURI
-    def dispatch_field_uri!(uri, ns=NS_EWS_MESSAGES)
+    def dispatch_field_uri!(uri, ns=NS_EWS_TYPES)
       type = uri.keys.first
       vals = uri[type].is_a?(Array) ? uri[type] : [uri[type]]
       case type
@@ -1075,14 +1089,14 @@ private
     end
 
     def set_impersonation!(type, address)
-	    if type && type != ""
-	      nbuild[NS_EWS_TYPES].ExchangeImpersonation {
-		      nbuild[NS_EWS_TYPES].ConnectingSID {
-		        nbuild[NS_EWS_TYPES].method_missing type, address
-		      }
+      if type && type != ""
+        nbuild[NS_EWS_TYPES].ExchangeImpersonation {
+          nbuild[NS_EWS_TYPES].ConnectingSID {
+            nbuild[NS_EWS_TYPES].method_missing type, address
+          }
         }
       end
-	  end
+    end
 
     # some methods need special naming so they use the '_r' suffix like 'and'
     def normalize_type(type)
