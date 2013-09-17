@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 =begin
   This file is part of Viewpoint; the Ruby library for Microsoft Exchange Web Services.
 
@@ -141,6 +142,20 @@ module Viewpoint::EWS::SOAP
       subscribe([{push_subscription_request: psr}])
     end
 
+    # Build acknowledge oush subscription notifications
+    # @param status [String] OK or Unsubscribe http://msdn.microsoft.com/en-us/library/exchange/aa579726(v=exchg.140).aspx
+    def ack_subscription_xml(status)
+      req = build_soap! do |type, builder|
+        if(type == :header)
+        else
+          builder.nbuild.SendNotificationResult {
+            builder.nbuild.parent.default_namespace = @default_ns
+            builder.subscription_status!(status)
+          }
+        end
+      end
+      return req.to_s
+    end
 
   end #ExchangeNotification
 end
