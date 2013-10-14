@@ -871,6 +871,10 @@ module Viewpoint::EWS::SOAP
       nbuild[NS_EWS_TYPES].End(et[:text])
     end
 
+    def is_all_day_event!(value)
+      nbuild[NS_EWS_TYPES].IsAllDayEvent(value)
+    end
+
     def categories!(categories)
       nbuild[NS_EWS_TYPES].Categories {
         categories.each do |category|
