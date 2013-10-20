@@ -13,7 +13,8 @@ module Viewpoint::EWS::Types
       start:   [:start, :text],
       end:   [:end, :text],
       location:   [:location, :text],
-      all_day?:   [:is_all_day_event, :text]
+      all_day?:   [:is_all_day_event, :text],
+      organizer_email: [:organizer, :elems, 0, :mailbox, :elems, 1, :email_address, :text]
    }
 
     CALENDAR_ITEM_KEY_TYPES = {
@@ -22,6 +23,7 @@ module Viewpoint::EWS::Types
       cancelled?:   ->(str){str.downcase == 'true'},
       all_day?:   ->(str){str.downcase == 'true'}
     }
+
     CALENDAR_ITEM_KEY_ALIAS = {}
 
 
