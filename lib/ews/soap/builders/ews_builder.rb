@@ -883,6 +883,10 @@ module Viewpoint::EWS::SOAP
       }
     end
 
+    def location!(loc)
+      nbuild[NS_EWS_TYPES].Location(loc)
+    end
+
     # @see http://msdn.microsoft.com/en-us/library/aa565428(v=exchg.140).aspx
     def item_changes!(changes)
       nbuild.ItemChanges {
