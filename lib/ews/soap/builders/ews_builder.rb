@@ -887,6 +887,12 @@ module Viewpoint::EWS::SOAP
       nbuild[NS_EWS_TYPES].Location(loc)
     end
 
+    def meeting_timezone!(tz_info)
+      nbuild[NS_EWS_TYPES].MeetingTimeZone {
+        nbuild[NS_EWS_TYPES].BaseOffset(tz_info[:base_offset])
+      }
+    end
+
     # @see http://msdn.microsoft.com/en-us/library/aa565428(v=exchg.140).aspx
     def item_changes!(changes)
       nbuild.ItemChanges {
