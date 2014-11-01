@@ -14,14 +14,18 @@ module Viewpoint::EWS::Types
       end:   [:end, :text],
       location:   [:location, :text],
       all_day?:   [:is_all_day_event, :text],
-      organizer_email: [:organizer, :elems, 0, :mailbox, :elems, 1, :email_address, :text]
+      organizer_email: [:organizer, :elems, 0, :mailbox, :elems, 1, :email_address, :text],
+      optional_attendees: [:optional_attendees, :elems ],
+      required_attendees: [:required_attendees, :elems ]
    }
 
     CALENDAR_ITEM_KEY_TYPES = {
       recurring?:   ->(str){str.downcase == 'true'},
       meeting?:     ->(str){str.downcase == 'true'},
       cancelled?:   ->(str){str.downcase == 'true'},
-      all_day?:   ->(str){str.downcase == 'true'}
+      all_day?:   ->(str){str.downcase == 'true'},
+      optional_attendees: :build_attendees_users,
+      required_attendees: :build_attendees_users
     }
 
     CALENDAR_ITEM_KEY_ALIAS = {}
