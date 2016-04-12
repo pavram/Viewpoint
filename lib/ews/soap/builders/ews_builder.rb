@@ -888,9 +888,10 @@ module Viewpoint::EWS::SOAP
     end
 
     def meeting_timezone!(tz_info)
-      nbuild[NS_EWS_TYPES].MeetingTimeZone {
-        nbuild[NS_EWS_TYPES].BaseOffset(tz_info[:base_offset])
-      }
+      nbuild[NS_EWS_TYPES].MeetingTimeZone do |x|
+        x.parent['TimeZoneName'] = tz_info[:time_zone_name] if tz_info[:time_zone_name]
+        nbuild[NS_EWS_TYPES].BaseOffset(tz_info[:base_offset]) if tz_info[:base_offset]
+      end
     end
 
     # @see http://msdn.microsoft.com/en-us/library/aa565428(v=exchg.140).aspx
