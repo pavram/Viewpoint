@@ -1129,7 +1129,8 @@ private
         time.to_datetime.new_offset(0).iso8601
       when String
         begin
-          DateTime.parse(time).new_offset(0).iso8601
+          # DateTime.parse(time).new_offset(0).iso8601
+          return time
         rescue ArgumentError
           raise EwsBadArgumentError, "Invalid Time argument (#{time})"
         end
