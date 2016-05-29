@@ -767,6 +767,78 @@ module Viewpoint::EWS::SOAP
       }
     end
 
+    def calendar_item_type!(type)
+      nbuild[NS_EWS_TYPES].CalendarItemType(type)
+    end
+
+    def recurrence!(item)
+      nbuild[NS_EWS_TYPES].Recurrence {
+        item.each_pair { |k, v|
+          self.send("#{k}!", v)
+        }
+      }
+    end
+
+    def daily_recurrence!(item)
+      nbuild[NS_EWS_TYPES].DailyRecurrence {
+        item.each_pair { |k, v|
+          self.send("#{k}!", v)
+        }
+      }
+    end
+
+    def weekly_recurrence!(item)
+      nbuild[NS_EWS_TYPES].WeeklyRecurrence {
+        item.each_pair { |k, v|
+          self.send("#{k}!", v)
+        }
+      }
+    end
+
+    def days_of_week!(days)
+      nbuild[NS_EWS_TYPES].DaysOfWeek(days)
+    end
+
+    def interval!(num)
+      nbuild[NS_EWS_TYPES].Interval(num)
+    end
+
+    def end_date_recurrence!(item)
+      nbuild[NS_EWS_TYPES].EndDateRecurrence {
+        item.each_pair { |k, v|
+          self.send("#{k}!", v)
+        }
+      }
+    end
+
+    def start_date!(str)
+      nbuild[NS_EWS_TYPES].StartDate(str)
+    end
+
+    def end_date!(str)
+      nbuild[NS_EWS_TYPES].EndDate(str)
+    end
+
+    def no_end_recurrence!(item)
+      nbuild[NS_EWS_TYPES].NoEndRecurrence {
+        item.each_pair { |k, v|
+          self.send("#{k}!", v)
+        }
+      }
+    end
+
+    def numbered_recurrence!(item)
+      nbuild[NS_EWS_TYPES].NumberedRecurrence {
+        item.each_pair { |k, v|
+          self.send("#{k}!", v)
+        }
+      }
+    end
+
+    def number_of_occurrences!(count)
+      nbuild[NS_EWS_TYPES].NumberOfOccurrences(count)
+    end
+
     def forward_item!(item)
       nbuild[NS_EWS_TYPES].ForwardItem {
         item.each_pair {|k,v|
