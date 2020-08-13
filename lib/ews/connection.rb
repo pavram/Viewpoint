@@ -27,13 +27,18 @@ class Viewpoint::EWS::Connection
   # @param [Hash] opts Misc config options (mostly for developement)
   # @option opts [Fixnum] ssl_verify_mode
   def initialize(endpoint, opts = {})
-    @log = Logging.logger[self.class.name.to_s.to_sym]
-    @httpcli = HTTPClient.new
-    @httpcli.ssl_config.verify_mode = opts[:ssl_verify_mode] if opts[:ssl_verify_mode]
-    # Up the keep-alive so we don't have to do the NTLM dance as often.
-    @httpcli.keep_alive_timeout = 60
-    @endpoint = endpoint
-  end
+     @log = Logging.logger[self.class.name.to_s.to_sym]
+     @httpcli = HTTPClient.new
+     @httpcli.connect_timeout = 10
+     @httpcli.receive_timeout = 10
+     @httpcli.send_timeout = 10
+     puts "HttpClient timeout set to 10 seconds."
+     @httpcli.ssl_config.verify_mode = opts[:ssl_verify_mode] if opts[:ssl_verify_mode]
+     # Up the keep-alive so we don't have to do the NTLM dance as often.
+     @httpcli.keep_alive_timeout = 60
+     @endpoint = endpoint
+   end
+  
 
   def set_auth(user,pass)
     @httpcli.set_auth(@endpoint.to_s, user, pass)
