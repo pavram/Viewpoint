@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = %w(README.md)
 
   s.add_runtime_dependency  'nokogiri'
-  s.add_runtime_dependency  'httpclient', '~> 2.8.1'
+  s.add_runtime_dependency  'httpclient', '>= 2.8.1'
   s.add_runtime_dependency  'rubyntlm', '~> 0.3.1'
   s.add_runtime_dependency  'logging'
 end
